@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Londres en Familia</title>
+    <!-- Google Fonts: Montserrat & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #ffffff;
+            --text-primary: #111111;
+            --text-muted: #555555;
+            --border-line: #eaeaea;
+            --accent-color: #1a252c;
+            --alt-bg: #fffbf0;
+            --alt-border: #d4ac0d;
+            --notes-bg: #fdfdfd;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.8;
+            letter-spacing: 0.2px;
+        }
+
+        /* Cabecera Wetu de Lujo */
+        .wetu-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 85vh;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .wetu-intro {
+            padding: 6rem 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .wetu-dates {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .wetu-intro h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .wetu-intro p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.9;
+            font-weight: 300;
+        }
+
+        .wetu-gallery {
+            background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1400&q=80');
+            background-size: cover;
+            background-position: center;
+            min-height: 450px;
+        }
+
+        /* Contenedor Principal */
+        .wetu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .section-header {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .day-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 2.5rem;
+            font-weight: 600;
+        }
+
+        /* Botones de Vistas Principales */
+        .main-view-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
+            border-bottom: 2px solid var(--border-line);
+            padding-bottom: 1rem;
+        }
+
+        .main-tab-btn {
+            background: #f4f6f8;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .main-tab-btn.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+
+        /* Pestañas de Días */
+        .wetu-tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid var(--border-line);
+            margin-bottom: 3.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding-bottom: 0.5rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-color);
+        }
+
+        .day-content { display: none; }
+        .day-content.active { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; animation: fadeIn 0.4s ease; align-items: start; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Timeline Wetu */
+        .timeline-side { position: relative; }
+        .timeline-side::before {
+            content: ''; position: absolute; top: 15px; bottom: 15px; left: 19px; width: 2px; background: #e0e0e0; border-style: dotted;
+        }
+
+        .timeline-event { display: flex; gap: 2rem; margin-bottom: 3rem; position: relative; }
+        .event-icon {
+            width: 40px; height: 40px; background: #ffffff; border: 2px solid #d0d0d0; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 2; font-size: 1.1rem;
+        }
+
+        .event-details h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; margin-bottom: 0.4rem; color: var(--text-primary); font-weight: 600; }
+        .event-time { font-size: 0.8rem; font-weight: 700; color: #d4ac0d; margin-bottom: 0.4rem; letter-spacing: 1px; text-transform: uppercase; }
+        .event-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem; font-weight: 300; }
+
+        .kids-alt-box {
+            background: var(--alt-bg); border-left: 3px solid var(--alt-border); padding: 1rem 1.2rem; font-size: 0.9rem; color: #7a5200; border-radius: 0 8px 8px 0; margin-top: 0.8rem; font-weight: 400;
+        }
+        .kids-alt-box strong { display: block; font-weight: 600; margin-bottom: 0.2rem; color: #593c00; font-family: 'Playfair Display', serif; font-size: 1rem; }
+
+        /* Caja Lateral de Notas e Historia de Lujo */
+        .notes-side {
+            background: var(--notes-bg); padding: 3.5rem; border-radius: 20px; border: 1px solid var(--border-line); box-shadow: 0 15px 35px rgba(0,0,0,0.04); position: sticky; top: 2rem;
+        }
+        .notes-side h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--text-primary); border-bottom: 2px solid var(--accent-color); padding-bottom: 0.75rem; }
+        .notes-side h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin: 1.5rem 0 0.5rem 0; color: var(--accent-color); }
+        .notes-side p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.8; font-weight: 300; }
+        .notes-side strong { color: var(--text-primary); font-weight: 600; }
+
+        /* Tabla Hora a Hora Detallada */
+        .detailed-table-container { background: #ffffff; border: 1px solid var(--border-line); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .detailed-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+        .detailed-table th { background: var(--accent-color); color: white; padding: 1.2rem 1.5rem; font-weight: 600; font-family: 'Playfair Display', serif; letter-spacing: 0.5px; font-size: 1.1rem; }
+        .detailed-table td { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border-line); color: var(--text-muted); vertical-align: middle; font-weight: 300; }
+        .detailed-table tr:hover { background: #fbfbfb; }
+        .time-col { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+        .alt-badge-cell { background: var(--alt-bg); color: #7a5200; font-size: 0.85rem; border-left: 3px solid var(--alt-border); font-weight: 400; }
+
+        footer { text-align: center; padding: 5rem 2rem; border-top: 1px solid var(--border-line); color: var(--text-muted); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        @media (max-width: 900px) {
+            .wetu-header { grid-template-columns: 1fr; }
+            .day-content.active { grid-template-columns: 1fr; gap: 2rem; }
+            .wetu-intro { padding: 4rem 2rem; }
+            .detailed-table { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabecera Wetu de Lujo -->
+    <header class="wetu-header">
+        <div class="wetu-intro">
+            <span class="wetu-dates">SÁBADO • DOMINGO • LUNES</span>
+            <h1>Londres 2026</h1>
+            <p>Una experiencia diseñada con absoluta excelencia. Tres días recorriendo la historia secreta, la magia urbana y los monumentos icónicos de la capital británica, adaptados a la perfección para disfrutar en familia con dos pequeños aventureros.</p>
+        </div>
+        <div class="wetu-gallery"></div>
+    </header>
+
+    <main class="wetu-container">
+        
+        <!-- Botones principales para alternar entre Revista Visual y Desglose Hora a Hora -->
+        <div class="main-view-tabs">
+            <button class="main-tab-btn active" onclick="switchMainView('resumen-view', event)">✨ Itinerario día a día</button>
+            <button class="main-tab-btn" onclick="switchMainView('detallado-view', event)">⏱️ Cronograma detallado</button>
+        </div>
+
+        <!-- ================= VISTA 1: REVISTA VISUAL E HISTORIA ================= -->
+        <div id="resumen-view" class="view-section active">
+            <div class="section-header">Selección Editorial de Experiencias</div>
+            <h2 class="day-title">Itinerario, Secretos y Leyendas</h2>
+
+            <div class="wetu-tabs">
+                <button class="tab-btn active" onclick="switchDay('sabado', event, 'resumen')">Día 1: Sábado</button>
+                <button class="tab-btn" onclick="switchDay('domingo', event, 'resumen')">Día 2: Domingo</button>
+                <button class="tab-btn" onclick="switchDay('lunes', event, 'resumen')">Día 3: Lunes</button>
+            </div>
+
+            <!-- SÁBADO RESUMEN -->
+            <div id="sabado-resumen" class="day-content active">
+                <div class="timeline-side">
+                    <div class="timeline-event">
+                        <div class="event-icon">🚇</div>
+                        <div class="event-details">
+                            <div class="event-time">11:00 - 12:10</div>
+                            <h3>Portobello Road & Notting Hill</h3>
+                            <div class="event-desc">Paseo fotográfico matutino por las icónicas casitas victorianas de colores pastel y el mercado de antigüedades.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🌳</div>
+                        <div class="event-details">
+                            <div class="event-time">12:20 - 13:35</div>
+                            <h3>Kensington Gardens & Albert Hall</h3>
+                            <div class="event-desc">Paseo verde hacia el monumento a Diana y el majestuoso Royal Albert Hall.</div>
+                            <div class="kids-alt-box"><strong>Plan Alternativo Peques (12:20 - 13:15):</strong> Disfrute absoluto en el parque infantil del Memorial de Diana, equipado con un gran barco pirata de madera inspirado en Peter Pan.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🍽️</div>
+                        <div class="event-details">
+                            <div class="event-time">13:40 - 15:10</div>
+                            <h3>Comida Conjunta</h3>
+                            <div class="event-desc">Almuerzo en familia en los selectos restaurantes cercanos al Royal Albert Hall.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🦖</div>
+                        <div class="event-details">
+                            <div class="event-time">15:25 - 16:15</div>
+                            <h3>Natural History Museum</h3>
+                            <div class="event-desc">Visita al templo de la ciencia, fósiles y la emblemática galería de dinosaurios.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🧸</div>
+                        <div class="event-details">
+                            <div class="event-time">16:30 - 19:30</div>
+                            <h3>Ruta de Jugueterías (Harrods, Hamleys, Lego & Disney)</h3>
+                            <div class="event-desc">Tarde mágica en Piccadilly, Oxford Street y la mítica juguetería Hamleys.</div>
+                            <div class="kids-alt-box"><strong>Plan Alternativo Peques:</strong> Estímulo visual inigualable con figuras gigantes de Lego, magia en directo en Hamleys y el universo Disney.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🍜</div>
+                        <div class="event-details">
+                            <div class="event-time">19:30 - 21:35</div>
+                            <h3>Cena en Soho / Chinatown y Vuelta</h3>
+                            <div class="event-desc">Reencuentro del grupo y cena reconfortante en el corazón gastronómico de Londres.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas e Historia del Sábado -->
+                <div class="notes-side">
+                    <h3>Crónica del Sábado</h3>
+                    <p><strong>Logística de la jornada:</strong> Arrancamos en el este (Aldgate) para sumergirnos en el oeste más elegante y colorista, enlazando la naturaleza de los parques reales con la fascinación de los museos y el bullicio mágico de las grandes jugueterías del centro.</p>
+                    
+                    <h4>Notting Hill: El secreto de sus colores</h4>
+                    <p>Antiguamente una zona rural de campos de cultivo y tejares, Notting Hill se transformó en el siglo XIX en un exclusivo suburbio victoriano. ¿Sabías que sus icónicas casas de tonos pastel surgieron en los años 50 como una extravagante y alegre forma de protesta vecinal contra la monotonía gris de la posguerra?</p>
+                    
+                    <h4>Natural History Museum: Un palacio para la ciencia</h4>
+                    <p>Obra maestra de la arquitectura neorrománica diseñada por Alfred Waterhouse, este edificio se construyó con terracota para resistir el hollín de la Londres victoriana. Sus muros están esculpidos con plantas y animales (vivos a un lado, extintos al otro), anticipando el tesoro de fósiles que guarda en su interior.</p>
+                </div>
+            </div>
+
+            <!-- DOMINGO RESUMEN -->
+            <div id="domingo-resumen" class="day-content">
+                <div class="timeline-side">
+                    <div class="timeline-event">
+                        <div class="event-icon">🏛️</div>
+                        <div class="event-details">
+                            <div class="event-time">08:30 - 12:55</div>
+                            <h3>Eje Monumental y Buckingham</h3>
+                            <div class="event-desc">Big Ben, Abadía de Westminster, Palacio de Buckingham y St. James's Park.</div>
+                            <div class="kids-alt-box"><strong>Plan Alternativo Peques:</strong> Parada de juegos en el parque infantil <em>Jubilee Gardens</em> y paseo entre patos y pelícanos en <em>Duck Island</em>.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🍽️</div>
+                        <div class="event-details">
+                            <div class="event-time">13:30 - 15:15</div>
+                            <h3>Covent Garden & Comida</h3>
+                            <div class="event-desc">Ambiente callejero dinámico y almuerzo familiar en la zona.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🖼️</div>
+                        <div class="event-details">
+                            <div class="event-time">15:30 - 16:50</div>
+                            <h3>National Gallery (o London Eye)</h3>
+                            <div class="event-desc">Visita cultural a la gran pinacoteca en Trafalgar Square.</div>
+                            <div class="kids-alt-box"><strong>Plan Alternativo Peques (15:30 - 16:50):</strong> En sustitución del museo, los niños disfrutan de una experiencia fascinante **subiendo al London Eye** para contemplar la ciudad desde las alturas.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🚢</div>
+                        <div class="event-details">
+                            <div class="event-time">17:05 - 19:15</div>
+                            <h3>Crucero Fluvial y Torre de Londres</h3>
+                            <div class="event-desc">Navegación panorámica por el Támesis hasta la Torre de Londres y contemplación del Tower Bridge.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🌙</div>
+                        <div class="event-details">
+                            <div class="event-time">19:30 en adelante</div>
+                            <h3>Regreso y Paseo Nocturno</h3>
+                            <div class="event-desc">Cena cerca del alojamiento y precioso paseo nocturno por St. Katharine Docks.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas e Historia del Domingo -->
+                <div class="notes-side">
+                    <h3>Crónica del Domingo</h3>
+                    <p><strong>Logística de la jornada:</strong> Un recorrido imperial por los corazones políticos y de la monarquía británica, combinando arte universal con una tarde inolvidable navegando las aguas del río Támesis.</p>
+                    
+                    <h4>El secreto del Big Ben</h4>
+                    <p>Mucha gente lo ignora, pero "Big Ben" es en realidad el nombre exclusivo de la campana mayor (de 13 toneladas) instalada en el campanario. La torre en sí fue bautizada oficialmente como <em>Elizabeth Tower</em> en 2012 para honrar el Jubileo de Diamante de la Reina Isabel II.</p>
+                    
+                    <h4>Torre de Londres: Mil años de leyendas</h4>
+                    <p>Erigida por Guillermo el Conquistador tras la conquista normanda de 1066, esta fortaleza ha sido palacio real, terrible prisión de personajes ilustres y la cámara acorazada donde se resguardan las deslumbrantes Joyas de la Corona, custodiadas por los famosos guardianes *Beefeaters*.</p>
+                </div>
+            </div>
+
+            <!-- LUNES RESUMEN -->
+            <div id="lunes-resumen" class="day-content">
+                <div class="timeline-side">
+                    <div class="timeline-event">
+                        <div class="event-icon">🧳</div>
+                        <div class="event-details">
+                            <div class="event-time">08:10 - 09:25</div>
+                            <h3>Consigna King's Cross y St. Paul</h3>
+                            <div class="event-desc">Salida con equipaje del apartamento, depósito en la estación de King's Cross y metro hacia San Pablo.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🏛️</div>
+                        <div class="event-details">
+                            <div class="event-time">09:45 - 12:20</div>
+                            <h3>St. Paul & British Museum</h3>
+                            <div class="event-desc">Visita a la gran cúpula catedralicia y los tesoros universales del museo.</div>
+                            <div class="kids-alt-box"><strong>Plan Alternativo Peques (09:45 - 12:20):</strong> Una mañana inolvidable en el **Zoológico de Londres (*ZSL London Zoo*)** en Regent's Park, disfrutando de leones, pingüinos y áreas interactivas.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">🛶</div>
+                        <div class="event-details">
+                            <div class="event-time">13:05 - 15:20</div>
+                            <h3>Camden Town y Comida</h3>
+                            <div class="event-desc">Breve paso por el bullicioso ambiente de Camden y almuerzo conjunto de despedida en King's Cross.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="event-icon">✈️</div>
+                        <div class="event-details">
+                            <div class="event-time">15:35 - 20:00</div>
+                            <h3>British Library y Salida a Heathrow</h3>
+                            <div class="event-desc">Breve visita literaria, recogida de maletas en la consigna de King's Cross y metro directo hacia LHR para el vuelo de las 20:00h.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas e Historia del Lunes -->
+                <div class="notes-side">
+                    <h3>Crónica del Lunes</h3>
+                    <p><strong>Logística magistral:</strong> Dejar el equipaje en la consigna de King's Cross a primera hora de la mañana libera al grupo de cargar peso, permitiendo exprimir el último día con total ligereza antes del regreso.</p>
+                    
+                    <h4>Catedral de San Pablo: El triunfo de la cúpula</h4>
+                    <p>Diseñada por el genial arquitecto Sir Christopher Wren tras el Gran Incendio de Londres de 1666, su imponente cúpula dominó el perfil de la ciudad durante siglos. Sobrevivió milagrosamente a los masivos bombardeos de la Segunda Guerra Mundial gracias al heroísmo de los bomberos voluntarios.</p>
+                    
+                    <h4>Zoológico de Londres: Pioneros de la naturaleza</h4>
+                    <p>Inaugurado en 1828 por la Sociedad Zoológica, es el zoo científico más antiguo del mundo. Además de pionero en la conservación moderna, sus recintos inspiraron entrañables obras literarias universales como las aventuras de Winnie-the-Pooh.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VISTA 2: DESGLOSE DETALLADO HORA A HORA ================= -->
+        <div id="detallado-view" class="view-section">
+            <div class="section-header">Cronograma Oficial Sincronizado</div>
+            <h2 class="day-title">Desglose Detallado Hora a Hora</h2>
+
+            <div class="wetu-tabs">
+                <button class="tab-btn active" onclick="switchDay('sabado', event, 'detalle')">Día 1: Sábado</button>
+                <button class="tab-btn" onclick="switchDay('domingo', event, 'detalle')">Día 2: Domingo</button>
+                <button class="tab-btn" onclick="switchDay('lunes', event, 'detalle')">Día 3: Lunes</button>
+            </div>
+
+            <!-- SÁBADO DETALLE -->
+            <div id="sabado-detalle" class="day-content active" style="display: block;">
+                <div class="detailed-table-container" style="grid-column: span 2;">
+                    <table class="detailed-table">
+                        <thead>
+                            <tr>
+                                <th>Franja Horaria</th>
+                                <th>Ruta (Origen ➔ Destino)</th>
+                                <th>Modo</th>
+                                <th>Plan Específico / Alternativa para Peques (3 y 1 año)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="time-col">11:00 - 12:00</td><td>58 Commercial Road ➔ Portobello Road</td><td>Metro</td><td>Desplazamiento inicial sin prisa</td></tr>
+                            <tr><td class="time-col">12:00 - 12:10</td><td>Portobello Road ➔ Notting Hill</td><td>Pie</td><td>Paseo fotográfico por las casitas victorianas</td></tr>
+                            <tr><td class="time-col">12:20 - 12:50</td><td>Notting Hill ➔ Kensington Gardens</td><td>Pie</td><td class="alt-badge-cell">Parque infantil Memorial Diana (barco pirata)</td></tr>
+                            <tr><td class="time-col">12:55 - 13:15</td><td>Kensington Gardens ➔ Monumento Diana</td><td>Pie</td><td class="alt-badge-cell">Paseo verde por los jardines reales</td></tr>
+                            <tr><td class="time-col">13:20 - 13:35</td><td>Monumento Diana ➔ Albert Hall</td><td>Pie</td><td>Contemplación del emblemático auditorio</td></tr>
+                            <tr style="background: #fffdf0; font-weight: 600;"><td class="time-col">13:40 - 15:10</td><td>COMIDA: Cerca de Royal Albert Hall</td><td>Pie</td><td class="alt-badge-cell">Almuerzo familiar en entorno accesible</td></tr>
+                            <tr><td class="time-col">15:25 - 16:15</td><td>Albert Hall ➔ Museo Historia Natural</td><td>Pie</td><td class="alt-badge-cell">Visita a la galería de dinosaurios y fósiles</td></tr>
+                            <tr><td class="time-col">16:30 - 16:50</td><td>Museo Historia Natural ➔ Harrods</td><td>Pie</td><td>Paseo exterior por la exclusiva zona de Knightsbridge</td></tr>
+                            <tr><td class="time-col">17:10 - 17:50</td><td>Harrods ➔ Piccadilly Circus</td><td>Pie</td><td>Tramo urbano (opción rápida en metro recomendada)</td></tr>
+                            <tr><td class="time-col">18:00 - 18:25</td><td>Piccadilly Circus ➔ Hamleys</td><td>Pie</td><td class="alt-badge-cell">Entrada triunfal a la juguetería Hamleys</td></tr>
+                            <tr><td class="time-col">18:25 - 18:50</td><td>Hamleys ➔ Oxford St</td><td>Pie</td><td class="alt-badge-cell">Visita a las macrotiendas Lego & Disney Store</td></tr>
+                            <tr><td class="time-col">18:50 - 19:10</td><td>Oxford St ➔ Carnaby St</td><td>Pie</td><td class="alt-badge-cell">Paseo peatonal por el eje comercial más vibrante</td></tr>
+                            <tr><td class="time-col">19:10 - 19:30</td><td>Carnaby St ➔ Gerrard St</td><td>Pie</td><td>Acceso directo a la zona de restauración</td></tr>
+                            <tr style="background: #fffdf0; font-weight: 600;"><td class="time-col">19:30 - 20:50</td><td>CENA: Soho / Chinatown</td><td>Pie</td><td class="alt-badge-cell">Cena reconfortante conjunta en familia</td></tr>
+                            <tr><td class="time-col">20:50 - 21:35</td><td>Regreso al Apartamento</td><td>Metro</td><td>Trayecto de vuelta para el descanso nocturno</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- DOMINGO DETALLE -->
+            <div id="domingo-detalle" class="day-content" style="display: none;">
+                <div class="detailed-table-container" style="grid-column: span 2;">
+                    <table class="detailed-table">
+                        <thead>
+                            <tr>
+                                <th>Franja Horaria</th>
+                                <th>Ruta (Origen ➔ Destino)</th>
+                                <th>Modo</th>
+                                <th>Plan Específico / Alternativa para Peques (3 y 1 año)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="time-col">08:30 - 09:05</td><td>58 Commercial Road ➔ Big Ben</td><td>Metro</td><td>Desplazamiento matutino temprano</td></tr>
+                            <tr><td class="time-col">09:20 - 09:30</td><td>Big Ben ➔ Abadía de Westminster</td><td>Pie</td><td class="alt-badge-cell">Parque infantil Jubilee Gardens (juegos frente al río)</td></tr>
+                            <tr><td class="time-col">09:45 - 10:05</td><td>Abadía de Westminster ➔ Catedral Westminster</td><td>Pie</td><td>Contemplación de la joya neobizantina</td></tr>
+                            <tr><td class="time-col">10:20 - 12:10</td><td>Catedral Westminster ➔ Buckingham Palace</td><td>Pie</td><td class="alt-badge-cell">Ambiente del Cambio de Guardia y palacio real</td></tr>
+                            <tr><td class="time-col">12:10 - 12:55</td><td>Buckingham Palace ➔ St James Park / Duck Island</td><td>Pie</td><td class="alt-badge-cell">Paseo por Duck Island (alimentación de patos y aves)</td></tr>
+                            <tr><td class="time-col">12:55 - 13:30</td><td>St James Park ➔ Trafalgar Square</td><td>Pie</td><td>Caminata monumental hacia la plaza de los leones</td></tr>
+                            <tr><td class="time-col">13:30 - 13:45</td><td>Trafalgar Square ➔ Covent Garden</td><td>Pie</td><td>Paseo hacia el animado mercado cubierto</td></tr>
+                            <tr style="background: #fffdf0; font-weight: 600;"><td class="time-col">13:45 - 15:15</td><td>COMIDA: Por Covent Garden</td><td>Pie</td><td class="alt-badge-cell">Almuerzo familiar en el corazón de Covent Garden</td></tr>
+                            <tr><td class="time-col">15:30 - 16:50</td><td>Covent Garden ➔ National Gallery</td><td>Pie</td><td class="alt-badge-cell"><strong>Subida al London Eye</strong> (Sustituye a la National Gallery para los niños)</td></tr>
+                            <tr><td class="time-col">17:05 - 17:55</td><td>National Gallery ➔ London Eye</td><td>Pie / Barco</td><td class="alt-badge-cell">Reencuentro y embarque en el crucero fluvial</td></tr>
+                            <tr><td class="time-col">17:55 - 18:45</td><td>London Eye ➔ Torre de Londres</td><td>Barco</td><td class="alt-badge-cell">Travesía en barco disfrutando de las vistas del Támesis</td></tr>
+                            <tr><td class="time-col">19:00 - 19:15</td><td>Torre de Londres ➔ Tower Bridge</td><td>Pie</td><td>Paseo junto a la antigua fortaleza medieval</td></tr>
+                            <tr><td class="time-col">19:30 - 19:50</td><td>Tower Bridge ➔ 58 Commercial Road</td><td>Pie</td><td>Caminata de retorno al barrio base</td></tr>
+                            <tr style="background: #fffdf0; font-weight: 600;"><td class="time-col">19:50 en adelante</td><td>CENA: 58 Commercial Road</td><td>Pie</td><td class="alt-badge-cell">Paseo nocturno mágico por St. Katharine Docks</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LUNES DETALLE -->
+            <div id="lunes-detalle" class="day-content" style="display: none;">
+                <div class="detailed-table-container" style="grid-column: span 2;">
+                    <table class="detailed-table">
+                        <thead>
+                            <tr>
+                                <th>Franja Horaria</th>
+                                <th>Ruta (Origen ➔ Destino)</th>
+                                <th>Modo</th>
+                                <th>Plan Específico / Alternativa para Peques (3 y 1 año)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="time-col">08:10 - 08:40</td><td>58 Commercial Road ➔ King's Cross (Consigna)</td><td>Metro</td><td>Traslado matutino con equipaje para su custodia</td></tr>
+                            <tr><td class="time-col">09:00 - 09:25</td><td>King's Cross ➔ St Paul</td><td>Metro</td><td>Desplazamiento ligeros de equipaje</td></tr>
+                            <tr><td class="time-col">09:45 - 11:55</td><td>St Paul ➔ British Museum</td><td>Pie</td><td class="alt-badge-cell"><strong>Visita al Zoológico de Londres en Regent's Park</strong> (Sustituye la mañana cultural)</td></tr>
+                            <tr><td class="time-col">11:55 - 13:05</td><td>British Museum ➔ Camden Town</td><td>Metro</td><td>Trayecto hacia el norte creativo de la ciudad</td></tr>
+                            <tr><td class="time-col">13:05 - 13:50</td><td>Camden Town ➔ British Library</td><td>Metro</td><td>Paseo exprés junto al canal y regreso a King's Cross</td></tr>
+                            <tr style="background: #fffdf0; font-weight: 600;"><td class="time-col">13:50 - 15:20</td><td>COMIDA: Por King's Cross</td><td>Pie</td><td class="alt-badge-cell">Almuerzo conjunto de despedida en familia</td></tr>
+                            <tr><td class="time-col">15:35 - 16:20</td><td>British Library ➔ King's Cross</td><td>Pie</td><td class="alt-badge-cell">Recogida de las maletas guardadas en la consigna</td></tr>
+                            <tr style="background: #fffdf0; font-weight: 600;"><td class="time-col">16:20 - 17:30</td><td>AEROPUERTO: Heathrow (LHR)</td><td>Metro</td><td>Trayecto directo y seguro hacia el vuelo de las 20:00h</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Londres en Familia 🚀</p>
+    </footer>
+
+    <!-- Scripts de Pestañas y Vistas -->
+    <script>
+        function switchMainView(viewId, event) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.main-tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function switchDay(dayId, event, mode) {
+            if(mode === 'resumen') {
+                document.querySelectorAll('#resumen-view .day-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('#resumen-view .tab-btn').forEach(el => el.classList.remove('active'));
+                
+                document.getElementById(dayId + '-resumen').classList.add('active');
+                event.currentTarget.classList.add('active');
+            } else {
+                document.querySelectorAll('#detallado-view .day-content').forEach(el => {
+                    el.classList.remove('active');
+                    el.style.display = 'none';
+                });
+                document.querySelectorAll('#detallado-view .tab-btn').forEach(el => el.classList.remove('active'));
+                
+                const target = document.getElementById(dayId + '-detalle');
+                target.classList.add('active');
+                target.style.display = 'block';
+                event.currentTarget.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
